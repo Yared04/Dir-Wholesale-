@@ -2,6 +2,8 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import Header from '../components/Header'
+import SignUp from '../components/SignUp'
+import LogIn from '../components/Login';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,6 +17,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Header />
       </header>
     <Component {...pageProps}/>
+
+    <LogIn/>
+    {/* <SignUp/> */}
+    
     </>
  )
 }
