@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Router, useRouter } from 'next/router';
 import React, { useState } from 'react'
 import SideBar from '../../components/SideBar'
 
@@ -19,28 +20,41 @@ export async function getStaticProps(){
 
 
 const index = ({categories, products }:any) => {
+    const router = useRouter();
        const newProduct = {name: 'trial',
                             desc: 'trial disc',
                             price: 200,
                             qty: 12,
-                            size: [''],
+                            size: '',
                             category: ''}
         const [img, setImage] = useState('');
         const [state, setState] = useState(newProduct);   
+    const handleRadio = (event:any) =>{
+        setState({
+            ...state, category: event.target.value
+        })
+
+    }
+    const deleteProduct = (id:any) => {
+
+
+    }
     const uploadProduct = (e:any) => {
         e.preventDefault()
         const formData = new FormData();
-        formData.append("img", img)
+        formData.append("image", img)
         formData.append("name", state.name)
         formData.append("desc", state.desc)
         formData.append("price", state.price.toString())
-        formData.append("size", state.size.toString()),
+        formData.append("sizes", state.size.toString()),
         formData.append("qty", state.qty.toString())
         formData.append("category", state.category)
 
         console.log(formData);
 
         axios.post('https://dirwholesale.onrender.com/api/product', formData)
+        router.push('/inventory');
+        
     }
 
      return (
@@ -91,7 +105,7 @@ const index = ({categories, products }:any) => {
                                                 <label htmlFor="floating_name" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Description</label>
                                             </div>
                                             <div className="relative z-0 w-full m-6">
-                                                <input type="text"  value={state.size} onChange={(e)=>setState({...state, size: e.target.value.split(',') })} id="floating_name" className="block py-2.5 px-5 w-1/2 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                                                <input type="text"  value={state.size} onChange={(e)=>setState({...state, size: e.target.value })} id="floating_name" className="block py-2.5 px-5 w-1/2 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                                                 <label htmlFor="floating_name" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Size</label>
                                             </div>
                                             <div className='m-6'>
@@ -102,7 +116,7 @@ const index = ({categories, products }:any) => {
                                                     return(
                                                         <li className="border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                             <div className="flex items-center pl-3">
-                                                                <input id={_category.id} type="radio" value={_category.id} onChange={(e)=>setState({...state, category: e.target.value})} name="category" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600"/>
+                                                                <input id={_category.id} type="radio" value={_category._id} onChange={handleRadio} checked={state.category === _category._id} name="category" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600"/>
                                                                 <label htmlFor={_category.id} className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{_category.name}</label>
                                                             </div>
                                                         </li>
@@ -146,7 +160,7 @@ const index = ({categories, products }:any) => {
                                 </tr>
                                 
                                 {
-                                products.map((product, index):any => {
+                                products.map((product:any, index:any) => {
                                     return (
                                     <tr key={index} className="shadow-md">
                                         <td className='truncate '>{product._id}</td>
@@ -154,7 +168,7 @@ const index = ({categories, products }:any) => {
                                             <img src={product.img} className="w-36" alt="item image" /></td>
                                         <td className='text-gray-500 mt-4'>
                                             <h1 className='font-bold text-black'>{product.name}</h1>
-                                            <p>Category: {categories[product.category]}</p> 
+                                            <p>Category: {product.category.name}</p> 
                                             <p> Size: {product.sizes}</p>
                                         </td>
                                         <td>{product.qty}</td>
@@ -166,7 +180,7 @@ const index = ({categories, products }:any) => {
                                             <div id="dropdownDots" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                                                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                                                 <li>
-                                                    <a href="#" className="block px-4 py-2 hover:bg-gray-100 text-red-500 dark:hover:bg-gray-600 dark:hover:text-white">Delete Product</a>
+                                                    <a href="#" onClick={()=>deleteProduct(product._id)} className="block px-4 py-2 hover:bg-gray-100 text-red-500 dark:hover:bg-gray-600 dark:hover:text-white">Delete Product</a>
                                                 </li>
                                                 <li>
                                                     <a href="#" className="block px-4 py-2 text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit Product</a>

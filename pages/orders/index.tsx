@@ -3,7 +3,9 @@ import React from 'react'
 import SideBar from '../../components/SideBar'
 
 export async function getStaticProps(){
-    const res = await axios.get('https://dirwholesale.onrender.com/api/order');
+    const res = await axios.get('https://dirwholesale.onrender.com/api/order', {
+        headers: {Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2VhMzU1N2RmZDQ1NWYwZjdmMjQyNWQiLCJpYXQiOjE2NzYyOTM0NjMsImV4cCI6MTY3NjM3OTg2M30.YGTCKKD-ndLciuJms6Dvvh_hlc6nVKqYcwNt0ElYI_s'}
+    });
     const orders = res.data;
 
     return {
@@ -58,7 +60,7 @@ const index = ( { orders }:any ) => {
                                         <td>{order._id}</td>
                                         <td>{order.type}</td>
                                         <td>
-                                            <h1 className='font-bold text-black py-5'>{order.user}</h1>
+                                            <h1 className='font-bold text-black py-5'>{order.user.name}</h1>
                                         </td>
                                         <td>{order.quantity}</td>
                                         <td>{status_map[parseInt(order.status)]}</td>
