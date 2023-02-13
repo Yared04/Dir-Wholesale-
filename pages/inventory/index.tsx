@@ -1,70 +1,48 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useState } from 'react'
 import SideBar from '../../components/SideBar'
 
-const index = () => {
-    const products = [{
-        name:'Nike air 20',
-        price:'1400',
-        category: 'Shoes',
-        quantity: 1,
-        id: 1,
-        imageUrl: 'https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg',
-        size: 33-44,
-       },
-       {
-        name:'Nike air 20',
-        price:'1400',
-        category: 'Shoes',
-        quantity: 21,
-        id: 1,
-        imageUrl: 'https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg',
-        size: 33-44,
-       },
-       {
-        name:'Nike air 20',
-        price:'1400',
-        category: 'Shoes',
-        quantity: 1,
-        id: 1,
-        imageUrl: 'https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg',
-        size: 33-44,
-       },
-       {
-        name:'Nike air 20',
-        price:'1400',
-        category: 'Shoes',
-        quantity: 1,
-        id: 1,
-        imageUrl: 'https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg',
-        size: 33-44,
-       },
-       {
-        name:'Nike air 20',
-        price:'1400',
-        category: 'Shoes',
-        quantity: 12,
-        id: 1,
-        imageUrl: 'https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg',
-        size: 33-44,
-       },
-       {
-        name:'Nike air 20',
-        price:'1400',
-        category: 'Shoes',
-        quantity: 12,
-        id: 1,
-        imageUrl: 'https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg',
-        size: 33-44,
-       },
-       {
-        name:'Nike air 20',
-        price:'1400',
-        quantity: 12,
-        category: 'Shoes',
-        id: 1,
-        imageUrl: 'https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg',
-        size: 33-44,
-       }];
+export async function getStaticProps(){
+        const res = await axios.get('https://dirwholesale.onrender.com/api/category');
+        const res2 = await axios.get('https://dirwholesale.onrender.com/api/product');
+        const categories =await res.data;
+        const products = await res2.data;
+    
+        return {
+            props :{
+                categories,
+                products
+            }
+
+        }
+    }
+
+
+const index = ({categories, products }:any) => {
+       const newProduct = {name: 'trial',
+                            desc: 'trial disc',
+                            price: 200,
+                            qty: 12,
+                            size: [''],
+                            category: ''}
+        const [img, setImage] = useState('');
+        const [state, setState] = useState(newProduct);   
+    const uploadProduct = (e:any) => {
+        e.preventDefault()
+        const formData = new FormData();
+        formData.append("img", img)
+        formData.append("name", state.name)
+        formData.append("desc", state.desc)
+        formData.append("price", state.price.toString())
+        formData.append("size", state.size.toString()),
+        formData.append("qty", state.qty.toString())
+        formData.append("category", state.category)
+
+        console.log(formData);
+
+        axios.post('https://dirwholesale.onrender.com/api/product', formData)
+    }
+
      return (
         <div className='bg-gray-200'>
             <main className='flex'>
@@ -92,7 +70,7 @@ const index = () => {
                                  data-modal-target="staticModal" data-modal-toggle="staticModal" type='button'>Add New</button>
 
                                 <div id="staticModal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
-                                  <div className="relative w-full h-full max-w-5xl md:h-auto">
+                                  <div className="relative mt-40 w-full h-full max-w-5xl md:h-auto">
                                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
 
                                         <div className="flex items-start justify-between p-4 bg-blue-500 border-b rounded-t dark:border-gray-600">
@@ -103,59 +81,51 @@ const index = () => {
                                                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
                                             </button>
                                         </div>
-                                        <form>
+                                        <form method='' action="">
                                             <div className="relative z-0 w-full m-6">
-                                                <input type="text"  id="floating_name" className="block py-2.5 px-5 w-1/2 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                                                <input type="text" value={state.name} onChange={(e)=>setState({...state, name: e.target.value })} id="floating_name" className="block py-2.5 px-5 w-1/2 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                                                 <label htmlFor="floating_name" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Product Name</label>
                                             </div>
                                             <div className="relative z-0 w-full m-6">
-                                                <input type="text"  id="floating_name" className="block py-2.5 px-5 w-1/2 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                                                <input type="text" value={state.desc} onChange={(e)=>setState({...state, desc: e.target.value })} id="floating_name" className="block py-2.5 px-5 w-1/2 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                                                <label htmlFor="floating_name" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Description</label>
+                                            </div>
+                                            <div className="relative z-0 w-full m-6">
+                                                <input type="text"  value={state.size} onChange={(e)=>setState({...state, size: e.target.value.split(',') })} id="floating_name" className="block py-2.5 px-5 w-1/2 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                                                 <label htmlFor="floating_name" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Size</label>
                                             </div>
                                             <div className='m-6'>
                                             <h1> Select Category</h1>
                                             <ul className="text-sm w-1/2 font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                            <li className="border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                                                <div className="flex items-center pl-3">
-                                                    <input id="vue-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                                    <label htmlFor="vue-checkbox" className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shoes</label>
-                                                </div>
-                                            </li>
-                                            <li className="border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                                                <div className="flex items-center pl-3">
-                                                    <input id="vue-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                                    <label htmlFor="vue-checkbox" className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shoes</label>
-                                                </div>
-                                            </li>
-                                            <li className="border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                                                <div className="flex items-center pl-3">
-                                                    <input id="vue-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                                    <label htmlFor="vue-checkbox" className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shoes</label>
-                                                </div>
-                                            </li>
-                                            <li className="border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                                                <div className="flex items-center pl-3">
-                                                    <input id="vue-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                                    <label htmlFor="vue-checkbox" className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shoes</label>
-                                                </div>
-                                            </li>
+                                            {
+                                                categories.map((_category:any) => {
+                                                    return(
+                                                        <li className="border-b border-gray-200 rounded-t-lg dark:border-gray-600">
+                                                            <div className="flex items-center pl-3">
+                                                                <input id={_category.id} type="radio" value={_category.id} onChange={(e)=>setState({...state, category: e.target.value})} name="category" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600"/>
+                                                                <label htmlFor={_category.id} className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{_category.name}</label>
+                                                            </div>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                            
                                             </ul>
                                             </div>
                                             <div className="relative z-0 w-full m-6">
-                                                <input type="number"  id="floating_num" className="block py-2.5 px-5 w-1/6 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                                                <input type="number"  id="floating_num" value={state.price} onChange={(e)=>setState({...state, price: parseInt(e.target.value) })} className="block py-2.5 px-5 w-1/6 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                                                 <label htmlFor="floating_num" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Price</label>
                                             </div>
                                             <div className="relative z-0 w-full m-6">
-                                                <input type="number"  id="floating_num" className="block py-2.5 px-5 w-1/6 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                                                <input type="number" value={state.qty} onChange={(e)=>setState({...state, qty: parseInt(e.target.value) })}   id="floating_num" className="block py-2.5 px-5 w-1/6 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                                                 <label htmlFor="floating_num" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Quantity Available</label>
                                             </div>
                                             <div className="relative z-0 w-full my-8 mx-6">
-                                                <input type="file"  id="floating_num" className="block py-2.5 px-5 w-1/2 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                                                <input type="file" onChange={(e:any)=>setImage(e.target.files[0])} id="floating_num"  className="block py-2.5 px-5 w-1/2 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                                                 <label htmlFor="floating_num" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Image</label>
                                             </div>
 
-                                            <input type="button" className='p-3 bg-blue-500 text-white font-medium rounded-lg m-6' value="Add" />
-                                        </form>
+                                            <button onClick={uploadProduct} className='p-3 bg-blue-500 text-white font-medium rounded-lg m-6 focus:p-4'>Add</button>                                        </form>
                                         <div>
 
                                         </div>
@@ -179,15 +149,15 @@ const index = () => {
                                 products.map((product, index):any => {
                                     return (
                                     <tr key={index} className="shadow-md">
-                                        <td>{product.id}</td>
+                                        <td className='truncate '>{product._id}</td>
                                         <td>
-                                            <img src={product.imageUrl} className="w-36" alt="item image" /></td>
+                                            <img src={product.img} className="w-36" alt="item image" /></td>
                                         <td className='text-gray-500 mt-4'>
                                             <h1 className='font-bold text-black'>{product.name}</h1>
-                                            <p>Category: {product.category}</p> 
-                                            <p> Size: {product.size}</p>
+                                            <p>Category: {categories[product.category]}</p> 
+                                            <p> Size: {product.sizes}</p>
                                         </td>
-                                        <td>{product.quantity}</td>
+                                        <td>{product.qty}</td>
                                         <td>
                                         <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button"> 
                                             <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
@@ -218,31 +188,20 @@ const index = () => {
                         <div className='col-span-1 bg-white shadow-xl rounded-lg mr-10 h-fit' >
                             <h1 className='bg-green-500 text-white font-medium p-3'>Filter By Category</h1>
                             <ul className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                                    <div className="flex items-center pl-3">
-                                        <input id="vue-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                        <label htmlFor="vue-checkbox" className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shoes</label>
-                                    </div>
-                                </li>
-                                {/* <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                                    <div className="flex items-center pl-3">
-                                        <input id="react-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                        <label htmlFor="react-checkbox" className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">React</label>
-                                    </div>
-                                </li>
-                                <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                                    <div className="flex items-center pl-3">
-                                        <input id="angular-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                        <label htmlFor="angular-checkbox" className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Angular</label>
-                                    </div>
-                                </li>
-                                <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                                    <div className="flex items-center pl-3">
-                                        <input id="laravel-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                        <label htmlFor="laravel-checkbox" className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Laravel</label>
-                                    </div>
-                                </li> */}
-                            </ul>
+                                            {
+                                                categories.map((category:any) => {
+                                                    return(
+                                                        <li className="border-b border-gray-200 rounded-t-lg ">
+                                                            <div className="flex items-center pl-3">
+                                                                <input id={category.id} type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"/>
+                                                                <label htmlFor={category.id} className="w-full py-3 ml-2 text-sm font-medium">{category.name}</label>
+                                                            </div>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                            
+                                            </ul>
                                         
 
                         </div>
