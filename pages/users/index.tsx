@@ -1,8 +1,29 @@
+import axios from 'axios';
 import React from 'react'
 import SideBar from '../../components/SideBar'
 
-const index = () => {
-    const users = [{name:'Yared Tegegn', id:'0003', purchased:'23' }];
+export async function getStaticProps(){
+    const res = await axios.get('https://dirwholesale.onrender.com/api/user/all', {
+        headers: {Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2VhMzU1N2RmZDQ1NWYwZjdmMjQyNWQiLCJpYXQiOjE2NzYyOTM0NjMsImV4cCI6MTY3NjM3OTg2M30.YGTCKKD-ndLciuJms6Dvvh_hlc6nVKqYcwNt0ElYI_s'}
+    });
+    const users = res.data;
+
+    return {
+        props:{
+            users
+        }
+    }
+
+}
+
+const index = ( {users}:any ) => {
+    const deleteUser =async  (id:string) =>{
+        const res = await axios.delete(`https://dirwholesale.onrender.com/api/user/${id}`, {
+            headers: {Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2VhMzU1N2RmZDQ1NWYwZjdmMjQyNWQiLCJpYXQiOjE2NzYyOTM0NjMsImV4cCI6MTY3NjM3OTg2M30.YGTCKKD-ndLciuJms6Dvvh_hlc6nVKqYcwNt0ElYI_s'}
+        });
+        console.log(res);
+
+    }
   return (
     <div className='bg-gray-200'>
         <main className='flex'>
@@ -30,9 +51,8 @@ const index = () => {
                     <table className='w-full'>
                                 <tbody>
                                 <tr className='text-left pl-3 shadow-sm bg-gray-200'>
-                                    <th className='py-3'>Inv. Id</th>
                                     <th>Name</th>
-                                    <th>Purchased</th>
+                                    <th>Role</th>
                                     <th>Action</th>
                                 </tr>
                                 
@@ -40,11 +60,10 @@ const index = () => {
                                 users.map((user, index):any => {
                                     return (
                                     <tr key={index} className="shadow-md">
-                                        <td>{user.id}</td>
                                         <td>
-                                            <h1 className='font-bold text-black py-5'>{user.name}</h1>
+                                            <h1 className='font-bold text-black py-5'>{user.firstName + user.lastName}</h1>
                                         </td>
-                                        <td>{user.purchased}</td>
+                                        <td>{user.role}</td>
                                         <td>
                                         <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button"> 
                                             <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
@@ -53,7 +72,7 @@ const index = () => {
                                             <div id="dropdownDots" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                                                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                                                 <li>
-                                                    <a href="#" className="block px-4 py-2 hover:bg-gray-100 text-red-500 dark:hover:bg-gray-600 dark:hover:text-white">Delete user</a>
+                                                    <a href="#" onClick={() => deleteUser(user._id)} className="block px-4 py-2 hover:bg-gray-100 text-red-500 dark:hover:bg-gray-600 dark:hover:text-white">Delete user</a>
                                                 </li>
                                                 <li>
                                                     <a href="#" className="block px-4 py-2 text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit user</a>

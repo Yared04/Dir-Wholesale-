@@ -46,24 +46,22 @@ const index = ( { orders }:any ) => {
                                 <tbody>
                                 <tr className='text-left pl-3 shadow-sm bg-gray-200'>
                                     <th className='py-3'>Inv. Id</th>
-                                    <th>Type</th>
                                     <th>Buyer</th>
-                                    <th>Quantity</th>
+                                    <th>Total Price</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                                 
                                 {
-                                orders.map((order, index):any => {
+                                orders.map((order:any, index:number) => {
                                     return (
                                     <tr key={index} className="shadow-md">
                                         <td>{order._id}</td>
-                                        <td>{order.type}</td>
                                         <td>
-                                            <h1 className='font-bold text-black py-5'>{order.user.name}</h1>
+                                            <h1 className='font-bold text-black py-5'>{order.user.firstName}</h1>
                                         </td>
-                                        <td>{order.quantity}</td>
-                                        <td>{status_map[parseInt(order.status)]}</td>
+                                        <td>{order.total}</td>
+                                        <td>{order.status}</td>
                                         <td>
                                         <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button"> 
                                             <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
