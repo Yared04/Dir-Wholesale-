@@ -1,7 +1,11 @@
 import Link from 'next/link'
 import React from 'react'
-
-const Header = () => {
+const Header = ( {loggedIn}:any ) => {
+  const handleLogout = () => {
+    window.localStorage.removeItem('user');
+    window.localStorage.removeItem('cart');
+    window.location.reload();
+  };
   return (
     <div className='bg-blue-500 flex justify-between'>
         <div className='font-bold text-white text-5xl p-5'>
@@ -19,16 +23,28 @@ const Header = () => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
         </svg>
         </Link>
-        <Link href="/auth/login">
-          <button className='px-5 mt-3 h-14 self-center font-bold rounded-lg  text-blue-500 border border-blue-500 bg-white '>Log In</button>
-        </Link>
-        <Link href="/auth/signup">
-          <button className='px-4 mt-3 h-14 self-center font-bold rounded-lg  text-blue-500 border border-blue-500 bg-white '>Sign Up</button>
-        </Link>
-        
+        {
+          !loggedIn? 
+        (
+          <div>
+            <Link href="/auth/login">
+              <button className='px-5 mt-3 h-14 self-center font-bold rounded-lg  text-blue-500 border border-blue-500 bg-white '>Log In</button>
+            </Link>
+            <Link href="/auth/signup">
+              <button className='px-4 mt-3 h-14 self-center font-bold rounded-lg  text-blue-500 border border-blue-500 bg-white '>Sign Up</button>
+            </Link>
+          </div>
+        ): (
 
+          <button
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        )
         
-
+        }   
 
         </div>
     </div>

@@ -35,7 +35,12 @@ const index = ({categories, products }:any) => {
         })
 
     }
-    const deleteProduct = (id:any) => {
+    const deleteProduct = async (id:any) => {
+        products = products.filter((item:any) => { item._id !== id})
+        const res = await axios.get(`https://dirwholesale.onrender.com/api/product/${id}`, {
+            headers: {Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2VhMzU1N2RmZDQ1NWYwZjdmMjQyNWQiLCJpYXQiOjE2NzYyOTM0NjMsImV4cCI6MTY3NjM3OTg2M30.YGTCKKD-ndLciuJms6Dvvh_hlc6nVKqYcwNt0ElYI_s'}
+        });
+        console.log(res);
 
 
     }
@@ -52,7 +57,9 @@ const index = ({categories, products }:any) => {
 
         console.log(formData);
 
-        axios.post('https://dirwholesale.onrender.com/api/product', formData)
+        axios.post('https://dirwholesale.onrender.com/api/product', formData, {
+            headers: {Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2VhMzU1N2RmZDQ1NWYwZjdmMjQyNWQiLCJpYXQiOjE2NzYyOTM0NjMsImV4cCI6MTY3NjM3OTg2M30.YGTCKKD-ndLciuJms6Dvvh_hlc6nVKqYcwNt0ElYI_s'}
+        });
         router.push('/inventory');
         
     }
@@ -180,10 +187,10 @@ const index = ({categories, products }:any) => {
                                             <div id="dropdownDots" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                                                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                                                 <li>
-                                                    <a href="#" onClick={()=>deleteProduct(product._id)} className="block px-4 py-2 hover:bg-gray-100 text-red-500 dark:hover:bg-gray-600 dark:hover:text-white">Delete Product</a>
+                                                    <a href="" onClick={()=>deleteProduct(product._id)} className="block px-4 py-2 hover:bg-gray-100 text-red-500 dark:hover:bg-gray-600 dark:hover:text-white">Delete Product</a>
                                                 </li>
                                                 <li>
-                                                    <a href="#" className="block px-4 py-2 text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit Product</a>
+                                                    <a className="block px-4 py-2 text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit Product</a>
                                                 </li>
                                                 
                                                 </ul>

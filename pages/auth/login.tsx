@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Router from 'next/router';
+import axios from 'axios';
 
 const login = () => {
   const [email, setEmail] = useState('');
@@ -9,11 +10,26 @@ const login = () => {
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     try {
-      // Implement your login logic here.
-      // For example, send a request to your server to check if the user exists and the password is correct.
+      const user = {
+        "email": email,
+        "password": password
+      }
 
-      // Redirect to the home page after successful login
-      Router.push('/');
+      const res = await axios.post('https://dirwholesale.onrender.com/api/user/login', user).then(
+        async response => {
+          const user = await response.data.user;
+
+          localStorage.setItem("user", user)
+          console.log(user);
+          if(user.role === "admin"){
+            Router.push('/dashboard')
+          }
+          else{
+            Router.push('/');
+          }
+        }
+      )
+      
     } catch (error) {
       setErrorMessage('Login failed. Please try again.');
     }
